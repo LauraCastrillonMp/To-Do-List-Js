@@ -2,12 +2,27 @@
 export default class Model {
     constructor() {
         this.view = null;
-        this.toDos = []; // Super Database
-        this.currentId = 1;
+        this.toDos = JSON.parse(localStorage.getItem('toDos')); // Super Database
+        if (!this.toDos || this.toDos.length < 1) { // List of tasks empty or null
+            this.toDos = [{
+                id: 0,
+                title: 'JS',
+                description: 'JS Practice',
+                completed: false
+            }];
+            this.currentId = 1;
+        } else {
+            this.currentId = this.toDos[this.toDos.length -1].id + 1;
+        }
     }
 
     setView(view) {
         this.view = view;
+    }
+
+    save() {
+        // JSON: Object notation(string)
+        localStorage.setItem('toDos', JSON.stringify(this.toDos));
     }
 
     getToDos() { // Obtain all To Do
@@ -36,6 +51,7 @@ export default class Model {
         this.toDos.push(toDo);
         console.log(this.toDos);
 
+        this.save(); // Save toDos in the local storage
         // Clon of object: toDo
         return {...toDo}; // return Object.assign({}, toDo);
     }
@@ -43,5 +59,6 @@ export default class Model {
     removeToDo(id) {
         const index = this.findToDo(id);
         this.toDos.splice(index, 1); // Index, from that index how many elements I want to delete
+        this.save();
     }
 }

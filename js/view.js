@@ -13,6 +13,11 @@ export default class View {
         this.model = model;
     }
 
+    render() { // Store tasks visually
+        const toDos = this.model.getToDos();
+        toDos.forEach(toDo => this.createRow(toDo));
+    }
+
     addToDo(title, description) {
         const toDo = this.model.addToDo(title, description);
         this.createRow(toDo);
