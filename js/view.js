@@ -18,6 +18,10 @@ export default class View {
         this.createRow(toDo);
     }
 
+    taskCompleted(id) {
+        this.model.taskCompleted(id);
+    }
+
     removeToDo(id) {
         this.model.removeToDo(id);
         document.getElementById(id).remove();
@@ -29,15 +33,19 @@ export default class View {
         row.innerHTML = `
             <td>${toDo.title}</td>
             <td>${toDo.description}</td>
-            <td class="text-center">
-                <input type="checkbox">
-            </td>
+            <td class="text-center"></td>
             <td class="text-right">
                 <button class="btn btn-primary mb-1">
                   <i class="fa fa-pencil"></i>
                 </button>
             </td>
         `;
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = toDo.completed;
+        checkbox.onclick = () => this.taskCompleted(toDo.id);
+        row.children[2].appendChild(checkbox);
 
         const removeBtn = document.createElement('button');
         removeBtn.classList.add('btn', 'btn-danger', 'mb-1', 'ml-1');

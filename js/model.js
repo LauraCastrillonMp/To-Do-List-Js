@@ -14,6 +14,17 @@ export default class Model {
         return this.toDos;
     }
 
+    findToDo(id) { // Find id of the task to manipulate
+        return this.toDos.findIndex((toDo) => toDo.id === id);
+    }
+
+    taskCompleted(id) {
+        const index = this.findToDo(id);
+        const toDo = this.toDos[index];
+        toDo.completed = !toDo.completed;
+        console.log(this.toDos);
+    }
+
     addToDo(title, description) { // Receive To Do
         const toDo = {
             id: this.currentId++,
@@ -30,7 +41,7 @@ export default class Model {
     }
 
     removeToDo(id) {
-        const index = this.toDos.findIndex((toDo) => toDo.id === id);
+        const index = this.findToDo(id);
         this.toDos.splice(index, 1); // Index, from that index how many elements I want to delete
     }
 }
