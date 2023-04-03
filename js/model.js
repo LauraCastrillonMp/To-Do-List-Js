@@ -40,6 +40,12 @@ export default class Model {
         this.save();
     }
 
+    editToDo(id, values) {
+        const index = this.findToDo(id);
+        Object.assign(this.toDos[index], values);
+        this.save();
+    }
+
     addToDo(title, description) { // Receive To Do
         const toDo = {
             id: this.currentId++,
