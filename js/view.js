@@ -1,16 +1,19 @@
 // this view/file will handle the table
 import AddToDo from "./components/addToDo.js";
 import Modal from "./components/modal.js";
+import Filters from "./components/filters.js";
 export default class View {
     constructor() {
         this.model = null;
         this.table = document.getElementById('table');
         this.addToDoForm = new AddToDo();
         this.modal = new Modal();
+        this.filters = new Filters();
         
         // Callback's
         this.addToDoForm.onClick((title, description) => this.addToDo(title, description));
         this.modal.onClick((id, values) => this.editToDo(id, values));
+        this.filters.onClick((filters) => this.filter(filters));
     }
 
     setModel(model) { // Obtaining the model for manipulation
@@ -20,6 +23,32 @@ export default class View {
     render() { // Store tasks visually
         const toDos = this.model.getToDos();
         toDos.forEach(toDo => this.createRow(toDo));
+    }
+
+    filter(filters) {
+        // Destructuring
+        const {type, words} = filters; // const type = filters.type and it's equal with words
+        const [, ...rows] = this.table.getElementsByTagName('tr'); // first row not selected
+        for (const row of rows) {
+            const [title, description, completed] = row.children;
+            let shouldHide = false;
+            if (words) {
+                shouldHide = !title.innerText.includes(words) && !description.innerText.includes(words)
+            }
+
+            const shouldBeCompleted = type === 'completed';
+            const isCompleted = completed.children[0].checked;
+
+            if (type !== 'all' && shouldBeCompleted !== isCompleted) {
+                shouldHide = true
+            }
+
+            if (shouldHide) {
+                row.classList.add('d-none');
+            } else {
+                row.classList.remove('d-none');
+            }  
+        }
     }
 
     addToDo(title, description) {
@@ -65,7 +94,12 @@ export default class View {
         editBtn.innerHTML = '<i class="fa fa-pencil"></i>';
         editBtn.setAttribute('data-toggle', 'modal');
         editBtn.setAttribute('data-target', '#modal');
-        editBtn.onclick = () => this.modal.setValues(toDo);
+        editBtn.onclick = () => this.modal.setValues({
+            id: toDo.id,
+            title: row.children[0].innerText,
+            description: row.children[1].innerText,
+            completed: row.children[2].children[0].checked
+        });
         row.children[3].appendChild(editBtn);
 
         const removeBtn = document.createElement('button');

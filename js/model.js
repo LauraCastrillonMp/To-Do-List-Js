@@ -26,7 +26,13 @@ export default class Model {
     }
 
     getToDos() { // Obtain all To Do
-        return this.toDos;
+        /*const toDos = [];
+        / for (const toDo of this.toDos) {
+        /     toDos.push({...toDo});
+        / }
+        / return toDos;
+        equal: */
+        return this.toDos.map((toDo) => ({...toDo})); // copy of the toDo's list
     }
 
     findToDo(id) { // Find id of the task to manipulate
